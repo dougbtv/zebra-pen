@@ -38,7 +38,7 @@ CI_ISO=$1-cidata.iso
 DISK=$1.qcow2
 
 # Bridge for VMs (default on Fedora is virbr0)
-BRIDGE=virbr0
+BRIDGE={{ bridge_name }}
 
 # Start clean
 rm -rf $DIR/$1

@@ -47,5 +47,5 @@
   set_fact:
     vm_ssh_key: "{{ cat_id_pub.stdout }}"
 
-- name: Your SSH key
+- name: Your SSH public key
   debug: "msg={{ vm_ssh_key }}"
