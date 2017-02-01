@@ -10,6 +10,11 @@
     docker pull cumulusnetworks/quagga:xenial-latest
   when: "'cumulusnetworks/quagga' not in '{{ docker_images.stdout }}'"
 
+- name: Always setup iptables forwarding rules
+  shell: >
+    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE &&
+    iptables -A FORWARD -i eth0 -j ACCEPT
+
 - name: Kill and remove quagga, conditionally
   shell: >
     docker kill quagga
@@ -23,7 +28,7 @@
 
 - name: Run quagga if not yet running
   shell: >
-    docker run -t -d --rm --net=host --privileged --name quagga cumulusnetworks/quagga:xenial-latest
+    docker run -t -d --rm -v /etc/Quagga.conf:/etc/quagga/Quagga.conf --net=host --privileged --name quagga cumulusnetworks/quagga:xenial-latest
   when: "'quagga' not in '{{ docker_psa.stdout }}'"
 
 # Quagga has some problems here, they're not using a single process in the foreground

@@ -77,6 +77,18 @@ line vty
 !
 ```
 
+But, I'm missing something.... is it the [forwarding rule](http://askubuntu.com/questions/227369/how-can-i-set-my-linux-box-as-a-router-to-forward-ip-packets)
+
+YES IT IS!!!!
+
+This worked...
+
+```
+[root@router_a centos]# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+[root@router_a centos]# iptables -A FORWARD -i eth0 -j ACCEPT
+```
+
+
 
 # Routing on centos a/b...
 

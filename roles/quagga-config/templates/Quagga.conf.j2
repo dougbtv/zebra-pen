@@ -1,0 +1,28 @@
+hostname zebra
+log file /var/log/quagga/zebra.log
+hostname bgpd
+log file /var/log/quagga/bgpd.log
+log timestamp precision 6
+username cumulus nopassword
+!
+service integrated-vtysh-config
+!
+interface docker0
+ link-detect
+!
+interface eth0
+ ipv6 nd suppress-ra
+ link-detect
+!
+interface lo
+ link-detect
+!
+interface swp1
+ link-detect
+!
+ip route {{ route_mask }} {{ route_via }}
+!
+ip forwarding
+!
+line vty
+!
