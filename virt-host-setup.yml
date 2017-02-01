@@ -1,0 +1,9 @@
+---
+- hosts: zebrapen
+  vars_files:
+    - vars/all.yml
+  tasks: []
+  roles:
+    # - { role: bifrost-install }
+    - { role: virthost-basics }
+    - { role: vm-spinup }

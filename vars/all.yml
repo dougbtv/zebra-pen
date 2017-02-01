@@ -1,0 +1,13 @@
+---
+
+centos_genericcloud_url: "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1611.qcow2"
+image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
+images_directory: /home/images
+virtual_machines:
+  - centos_a
+  - centos_b
+  - router_a
+  - router_b
+vm_parameters:
+  ram_mb: 2048
+  cpus: 1

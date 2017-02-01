@@ -1,0 +1,15 @@
+---
+
+- name: Template the SSH spinup script
+  template:
+    src: spinup.sh.j2
+    dest: /root/spinup.sh
+    mode: 0755
+
+- name: Get the virsh list
+  shell: >
+    virsh list
+  register: virsh_list
+
+- name: Show virsh list
+  debug: "msg={{ virsh_list.stdout }}"
