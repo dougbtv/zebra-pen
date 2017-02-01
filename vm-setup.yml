@@ -1,8 +1,16 @@
 ---
+# Add utility packages to all vms
+- hosts: all_vms
+  vars_files:
+    - vars/all.yml
+  roles:
+    - { role: vm-utilities }
+
+# Run quagga in a container on all vms
 - hosts: routers
   vars_files:
     - vars/all.yml
   tasks: []
   roles:
     - { role: docker-install }
-    - { role: quagga-run }
+    - { role: quagga-run, force_quagga_kill: true }

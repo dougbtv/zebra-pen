@@ -12,7 +12,7 @@
 
 - name: Kill and remove quagga, conditionally
   shell: >
-    docker kill quagga; docker rm quagga
+    docker kill quagga
   when: "{{force_quagga_kill}}"
   ignore_errors: yes
 
