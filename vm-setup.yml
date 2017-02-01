@@ -1,0 +1,7 @@
+---
+- hosts: routers
+  vars_files:
+    - vars/all.yml
+  tasks: []
+  roles:
+    - { role: docker-install }
