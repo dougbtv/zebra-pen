@@ -12,3 +12,4 @@ virtual_machines:
 vm_parameters:
   ram_mb: 2048
   cpus: 1
+force_quagga_kill: false

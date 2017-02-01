@@ -16,7 +16,7 @@ CentOS A -> Router A -> Router B -> CentOS B
 
 ## How-to
 
-There's two phases here, I would've done this in one shot, but would require some sorcery with dynamic inventories, and to be expedient, I've left it to the user to create a second inventory of hosts. Maybe in the future I'll set it up for a one-shot with a dynamic inventory.
+There's a few phases here, I would've done this in one shot, but would require some sorcery with dynamic inventories, and to be expedient, I've left it to the user to create a second inventory of hosts. Maybe in the future I'll set it up for a one-shot with a dynamic inventory.
 
 * Phase 1: Configures the virtual machine host and spins up 4 VMs (as above in goal)
 * Phase 2: Setup inventory for VM provisioning

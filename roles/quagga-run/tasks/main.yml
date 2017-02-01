@@ -1,0 +1,41 @@
+---
+
+- name: List docker images
+  shell: >
+    docker images
+  register: docker_images
+
+- name: Pull quagga when not found
+  shell: >
+    docker pull cumulusnetworks/quagga:xenial-latest
+  when: "'cumulusnetworks/quagga' not in '{{ docker_images.stdout }}'"
+
+- name: Kill and remove quagga, conditionally
+  shell: >
+    docker kill quagga; docker rm quagga
+  when: "{{force_quagga_kill}}"
+  ignore_errors: yes
+
+- name: Get list of running containers
+  shell: >
+    docker ps -a
+  register: docker_psa
+
+- name: Run quagga if not yet running
+  shell: >
+    docker run -t -d --rm --net=host --privileged --name quagga cumulusnetworks/quagga:xenial-latest
+  when: "'quagga' not in '{{ docker_psa.stdout }}'"
+
+# Quagga has some problems here, they're not using a single process in the foreground
+# So we have to baby starting it up
+# So let's list the processes in the container and start up quagga if need be
+
+- name: List processes in container
+  shell: >
+    docker exec -i quagga ps ax
+  register: quagga_ps
+
+- name: Run quagga in the container via exec
+  shell: >
+    docker exec -i quagga /usr/lib/quagga/quagga start
+  when: "'zebra' not in '{{ quagga_ps.stdout }}'"

@@ -5,3 +5,4 @@
   tasks: []
   roles:
     - { role: docker-install }
+    - { role: quagga-run }
