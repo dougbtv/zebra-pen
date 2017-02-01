@@ -19,8 +19,6 @@
   vars_files:
     - vars/all.yml
   tasks:
-    - debug: "msg={{ hostvars['router_a']['ansible_host'] }}"
-
     - name: Set the static route on centos_a to centos_b
       shell: >
         route add -net {{ hostvars['centos_b']['ansible_host'] }} netmask 255.255.255.255 gw {{ hostvars['router_a']['ansible_host'] }}

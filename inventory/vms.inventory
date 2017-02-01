@@ -1,7 +1,7 @@
-centos_a ansible_host=192.168.122.176
-centos_b ansible_host=192.168.122.31
-router_a ansible_host=192.168.122.135
-router_b ansible_host=192.168.122.9
+centos_a ansible_host=192.168.122.196
+centos_b ansible_host=192.168.122.25
+router_a ansible_host=192.168.122.242
+router_b ansible_host=192.168.122.174
 
 [vanilla_centos]
 centos_a

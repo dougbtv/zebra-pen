@@ -33,3 +33,17 @@
 
 - name: Here are the IPs of the VMs
   debug: "msg={{ vm_ips_dict }}"
+
+- name: Flush out /etc/hosts, always (for simplicity)
+  lineinfile: 
+    dest: /etc/hosts
+    state: absent
+    regexp: '{{ item.key }}'
+  with_dict: "{{ vm_ips_dict }}"
+
+- name: Build out /etc/hosts for each VM
+  lineinfile: 
+    dest: /etc/hosts
+    line: '{{ item.value }} {{ item.key }}'
+    regexp: '{{ item.key }}'
+  with_dict: "{{ vm_ips_dict }}"
