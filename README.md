@@ -1,6 +1,6 @@
 # zebra-pen
 
-A suite of playbooks and roles to create a demo router VNF.
+A suite of playbooks and roles to create a demo router VNF, in containers.
 
 ## Goal
 
