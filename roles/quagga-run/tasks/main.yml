@@ -17,7 +17,7 @@
 
 - name: Kill and remove quagga, conditionally
   shell: >
-    docker kill quagga
+    docker kill {{ quagga_container_name }}
   when: "{{force_quagga_kill}}"
   ignore_errors: yes
 
@@ -26,10 +26,11 @@
     docker ps -a
   register: docker_psa
 
-- name: Run quagga if not yet running
+- name: Run quagga if not yet running NOTE -- CONFIGURATION REMOVED!!!!
+  # -v /etc/Quagga.conf:/etc/quagga/Quagga.conf
   shell: >
-    docker run -t -d --rm -v /etc/Quagga.conf:/etc/quagga/Quagga.conf --net=host --privileged --name quagga cumulusnetworks/quagga:xenial-latest
-  when: "'quagga' not in '{{ docker_psa.stdout }}'"
+    docker run -t -d --rm --net=host --privileged --name {{ quagga_container_name }} cumulusnetworks/quagga:xenial-latest
+  when: "'{{ quagga_container_name }}' not in '{{ docker_psa.stdout }}'"
 
 # Quagga has some problems here, they're not using a single process in the foreground
 # So we have to baby starting it up
@@ -37,10 +38,10 @@
 
 - name: List processes in container
   shell: >
-    docker exec -i quagga ps ax
+    docker exec -i {{ quagga_container_name }} ps ax
   register: quagga_ps
 
 - name: Run quagga in the container via exec
   shell: >
-    docker exec -i quagga /usr/lib/quagga/quagga start
+    docker exec -i {{ quagga_container_name }} /usr/lib/quagga/quagga start
   when: "'zebra' not in '{{ quagga_ps.stdout }}'"

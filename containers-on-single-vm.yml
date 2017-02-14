@@ -1,0 +1,24 @@
+---
+# Run 2 quagga in a container on all vms
+- hosts: all_vms
+  vars_files:
+    - vars/all.yml
+  tasks: []
+  roles:
+    - { role: docker-install }
+    - { role: quagga-run, quagga_container_name: quagga_a, force_quagga_kill: true }
+    - { role: quagga-run, quagga_container_name: quagga_b, force_quagga_kill: true }
+  post_tasks:
+    - name: Pull centos image
+      shell: >
+        docker pull centos:centos7
+    - name: Remove all centos running containers 
+      shell: >
+        docker rm $(docker stop $(docker ps -a | grep -i centos_ | awk '{print $1}'))
+      ignore_errors: yes
+    - name: Run two centos containers
+      shell: >
+        docker run --name {{ item }} -dt centos:centos7 /bin/bash
+      with_items: 
+        - centos_a
+        - centos_b

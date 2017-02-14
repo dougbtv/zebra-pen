@@ -4,6 +4,5 @@
     - vars/all.yml
   tasks: []
   roles:
-    # - { role: bifrost-install }
     - { role: virthost-basics }
     - { role: vm-spinup }

@@ -14,7 +14,29 @@ CentOS A -> Router A -> Router B -> CentOS B
 
 ![layout diagram](http://i.imgur.com/G9xYib7.png)
 
-## How-to
+## Iteration 2: All-in-one-VM
+
+![layout diagram, iteration 2](http://i.imgur.com/99SmRVx.png)
+
+In the second iteration, we run all the containers on a single VM. However, no configuration is made to the routers. Portions of "Iteration 1" are reused.
+
+To develop this, Doug used his own virt-host as specified in "Iteration 1" documentation. To deploy this for help by Ajay to configure the routers, Doug deployed this on Ajay's OpenStack VM instance.
+
+Doug leveraged the `virt-host-setup.yml` playbook (which spins up virtual machines), and then modified the `./vars/all.yml` to change to a single instance.
+
+In order to run the containers against a VM that is already existing (including Ajay's OpenStack VM instance) modify the `./inventory/single_vm.inventory` file to fit your requirements.
+
+And then run the playbook like:
+
+```
+ansible-playbook -i inventory/single_vm.inventory containers-on-single-vm.yml 
+```
+
+
+
+---
+
+## How-to -- Iteration 1
 
 There's a few phases here, I would've done this in one shot, but would require some sorcery with dynamic inventories, and to be expedient, I've left it to the user to create a second inventory of hosts. Maybe in the future I'll set it up for a one-shot with a dynamic inventory.
 
