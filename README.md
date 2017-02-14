@@ -32,7 +32,41 @@ And then run the playbook like:
 ansible-playbook -i inventory/single_vm.inventory containers-on-single-vm.yml 
 ```
 
+Once the playbook has run, you can see these containers are running:
 
+```
+[root@centos-host centos]# docker ps
+CONTAINER ID        IMAGE                                  COMMAND             CREATED             STATUS              PORTS               NAMES
+5f73798df94d        centos:centos7                         "/bin/bash"         39 minutes ago      Up 39 minutes                           centos_b
+c4f7da02d3d8        centos:centos7                         "/bin/bash"         39 minutes ago      Up 39 minutes                           centos_a
+f12ea2a547cb        cumulusnetworks/quagga:xenial-latest   "/bin/bash"         41 minutes ago      Up 41 minutes                           quagga_b
+56f97629fe5e        cumulusnetworks/quagga:xenial-latest   "/bin/bash"         42 minutes ago      Up 42 minutes                           quagga_a
+```
+
+You can enter any container you like with:
+
+```
+[root@centos-host centos]# docker exec -it centos_a /bin/bash
+[root@c4f7da02d3d8 /]# ping -c 1 4.2.2.2
+PING 4.2.2.2 (4.2.2.2) 56(84) bytes of data.
+64 bytes from 4.2.2.2: icmp_seq=1 ttl=51 time=53.4 ms
+
+--- 4.2.2.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.471/53.471/53.471/0.000 ms
+```
+
+And you can go and interactively configure quagga like...
+
+```
+[root@centos-host centos]# docker exec -it quagga_a /bin/bash
+root@centos-host:/# vtysh
+
+Hello, this is Quagga (version 0.99.23.1+cl3u2).
+Copyright 1996-2005 Kunihiro Ishiguro, et al.
+
+centos-host# 
+```
 
 ---
 
