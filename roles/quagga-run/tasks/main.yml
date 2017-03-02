@@ -26,10 +26,10 @@
     docker ps -a
   register: docker_psa
 
-- name: Run quagga if not yet running NOTE -- CONFIGURATION REMOVED!!!!
-  # -v /etc/Quagga.conf:/etc/quagga/Quagga.conf
+- name: Run quagga if not yet running
+  # 
   shell: >
-    docker run -t -d --rm --net=host --privileged --name {{ quagga_container_name }} cumulusnetworks/quagga:xenial-latest
+    docker run -dt -v {{ use_config }}:/etc/quagga/Quagga.conf --rm --privileged --name {{ quagga_container_name }} cumulusnetworks/quagga:xenial-latest
   when: "'{{ quagga_container_name }}' not in '{{ docker_psa.stdout }}'"
 
 # Quagga has some problems here, they're not using a single process in the foreground
