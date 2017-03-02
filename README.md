@@ -14,6 +14,18 @@ CentOS A -> Router A -> Router B -> CentOS B
 
 ![layout diagram](http://i.imgur.com/G9xYib7.png)
 
+## Iteration 3: Single VM, specific network interfaces in containers
+
+In this third iteration we're going to use a specialized script created by [Tomo](https://github.com/s1061123) which allows us to specifically craft network interfaces for each virtual machine.
+
+To kick off this playbook, modify the `./inventory/single_vm.inventory` file and then run:
+
+```
+$ ansible-playbook -i inventory/single_vm.inventory vethcon-single-vm.yml
+```
+
+
+
 ## Iteration 2: All-in-one-VM
 
 ![layout diagram, iteration 2](http://i.imgur.com/99SmRVx.png)
