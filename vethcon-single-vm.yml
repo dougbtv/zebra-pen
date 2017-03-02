@@ -16,6 +16,6 @@
     - { role: run-endpoints }
     - { role: quagga-config, destination_config: "/etc/quagga_a.conf", route_mask: "192.168.4.101/32", route_via: "192.168.3.101" }
     # - { role: quagga-config, destination_config: "/etc/quagga_b.conf", route_mask: "192.168.4.101/32", route_via: "192.168.4.101" }
-    - { role: quagga-run, use_config: "/etc/quagga_a.conf", quagga_container_name: quagga_a, force_quagga_kill: true }
-    - { role: quagga-run, quagga_container_name: quagga_b, force_quagga_kill: true }
+    - { role: quagga-run, use_config: "/etc/quagga_a.conf", quagga_container_name: quagga_a, force_quagga_kill: true, quagga_debug: true }
+    - { role: quagga-run, quagga_container_name: quagga_b, force_quagga_kill: true, quagga_debug: true }
     - { role: vethcon-configure }

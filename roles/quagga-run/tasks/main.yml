@@ -45,6 +45,11 @@
 # So we have to baby starting it up
 # So let's list the processes in the container and start up quagga if need be
 
+- name: Install packages when debug is enabled
+  shell: >
+    docker exec -i {{ quagga_container_name }} /bin/bash -c 'apt-get update && apt-get -y install inetutils-ping net-tools tcpdump'
+  when: quagga_debug is defined
+
 - name: List processes in container
   shell: >
     docker exec -i {{ quagga_container_name }} ps ax
