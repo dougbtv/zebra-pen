@@ -1,0 +1,42 @@
+---
+
+- name: Install dependencies
+  yum:
+    name: "{{ item }}"
+  with_items:
+    - golang 
+    - nano 
+    - tree 
+    - git
+
+- name: Setup environment variables
+  set_fact:
+    go_environment:
+      GOPATH: "/usr/src/gocode/"
+
+- name: Create go source directory
+  file:
+    path: /usr/src/gocode/src/vethcon
+    state: directory
+
+- name: Copy vethcon go file
+  copy:
+    src: vethcon.go
+    dest: /usr/src/gocode/src/vethcon/vethcon.go
+
+- name: Resolve vethcon dependencies
+  shell: >
+    go get vethcon
+  args:
+    creates: /usr/src/gocode/src/github.com
+    chdir: /usr/src/gocode/
+  environment: "{{ go_environment }}"
+
+- name: Compile vethcon binary
+  shell: >
+    go build vethcon
+  args:
+    creates: /usr/src/gocode/vethcon
+    chdir: /usr/src/gocode/
+  environment: "{{ go_environment }}"
+
