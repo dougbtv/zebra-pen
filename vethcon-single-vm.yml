@@ -1,0 +1,18 @@
+---
+# Run 2 quagga in a container on all vms
+- hosts: all_vms
+  vars_files:
+    - vars/all.yml
+  pre_tasks:
+    - name: Remove all running containers
+      shell: >
+        docker rm $(docker kill $(docker ps -aq))
+      ignore_errors: yes
+  tasks: []
+  roles:
+    - { role: docker-install }
+    - { role: vethcon-compile }
+    - { role: docker-build-images }
+    - { role: run-endpoints }
+  #   - { role: quagga-run, quagga_container_name: quagga_a, force_quagga_kill: true }
+  #   - { role: quagga-run, quagga_container_name: quagga_b, force_quagga_kill: true }
