@@ -26,10 +26,19 @@
     docker ps -a
   register: docker_psa
 
+- name: Default volume fact
+  set_fact:
+    config_mount: ""
+
+- name: Set volume fact when necessary
+  set_fact:
+    config_mount: "-v {{ use_config }}:/etc/quagga/Quagga.conf"
+  when: use_config is defined
+
 - name: Run quagga if not yet running
   # 
   shell: >
-    docker run -dt -v {{ use_config }}:/etc/quagga/Quagga.conf --rm --privileged --name {{ quagga_container_name }} cumulusnetworks/quagga:xenial-latest
+    docker run -dt -h {{ quagga_container_name }} {{ config_mount }} --rm --privileged --name {{ quagga_container_name }} cumulusnetworks/quagga:xenial-latest
   when: "'{{ quagga_container_name }}' not in '{{ docker_psa.stdout }}'"
 
 # Quagga has some problems here, they're not using a single process in the foreground
