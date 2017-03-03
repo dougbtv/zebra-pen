@@ -1,0 +1,8 @@
+--- 
+
+- name: Run custom centos docker images
+  shell: >
+    docker run -dt -h {{ item }} --name {{ item }} --privileged veth_centos /bin/bash
+  with_items:
+    - centos_a
+    - centos_b

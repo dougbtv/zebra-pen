@@ -5,10 +5,7 @@ image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
 images_directory: /home/images
 bridge_name: virbr0
 virtual_machines:
-  - centos_a
-  - centos_b
-  - router_a
-  - router_b
+  - container_host
 vm_parameters:
   ram_mb: 2048
   cpus: 1

@@ -1,0 +1,11 @@
+{% for interface in ospfd_interfaces %}
+interface {{ interface }}
+{% endfor %}
+interface lo
+router ospf
+ passive-interface {{ ospfd_passive_interface }}
+ {% for network in ospfd_networks %} 
+ network {{ network }} area 0.0.0.0
+ {% endfor %}
+
+line vty

@@ -1,0 +1,29 @@
+---
+
+- name: Create source tree for Dockerfiles
+  file:
+    path: /usr/src/dockerfiles/veth_centos
+    state: directory
+
+- name: Copy Dockerfile
+  copy:
+    src: Dockerfile.veth_centos
+    dest: /usr/src/dockerfiles/veth_centos/Dockerfile
+
+- name: List docker images
+  shell: >
+    docker images
+  register: image_list
+
+- name: Pull centos:centos7
+  shell: >
+    docker pull centos:centos7
+  when: "'centos7' not in '{{ image_list.stdout }}'"
+
+- name: Build veth_centos
+  shell: >
+    docker build -t veth_centos .
+  args:
+    chdir: /usr/src/dockerfiles/veth_centos/
+  when: "'veth_centos' not in '{{ image_list.stdout }}'"    
+
