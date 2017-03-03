@@ -104,3 +104,4 @@ Note, I don't know what I'm doing, lolz.
 
 [This config reference looks promising](http://www.brianlinkletter.com/how-to-build-a-network-of-linux-routers-using-quagga/)
 
+That article was good as gold, worked a charm.

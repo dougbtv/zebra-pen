@@ -25,10 +25,10 @@
     docker ps | grep quagga_b | awk '{print $1}'
   register: id_quagga_b
 
-- debug: "msg={{ id_centos_a.stdout }}"
-- debug: "msg={{ id_centos_b.stdout }}"
-- debug: "msg={{ id_quagga_a.stdout }}"
-- debug: "msg={{ id_quagga_b.stdout }}"
+# - debug: "msg={{ id_centos_a.stdout }}"
+# - debug: "msg={{ id_centos_b.stdout }}"
+# - debug: "msg={{ id_quagga_a.stdout }}"
+# - debug: "msg={{ id_quagga_b.stdout }}"
 
 - name: Create ingress interfaces
   shell: >
@@ -76,4 +76,5 @@
     docker exec -i centos_b /bin/bash -c '
     ip link set dev out2 up;
     ip a add 192.168.4.101/255.255.255.0 dev out2;
+    ip route add 192.168.2.0/24 via 192.168.4.100 dev out2;
     '
