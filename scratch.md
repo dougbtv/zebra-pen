@@ -97,3 +97,10 @@ This worked...
 [root@centos_a centos]# route del -net 192.168.122.31 netmask 255.255.255.255 gw 192.168.122.135
 ```
 
+
+# Phase 3
+
+Note, I don't know what I'm doing, lolz.
+
+[This config reference looks promising](http://www.brianlinkletter.com/how-to-build-a-network-of-linux-routers-using-quagga/)
+

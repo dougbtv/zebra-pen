@@ -1,5 +1,15 @@
 ---
 
+- name: Template quagga config
+  template: 
+    src: Quagga.conf.j2
+    dest: "{{ destination_config }}"
+
+- name: Template quagga config
+  template: 
+    src: daemons.j2
+    dest: /etc/quagga.daemons
+
 - name: List docker images
   shell: >
     docker images
@@ -38,7 +48,14 @@
 - name: Run quagga if not yet running
   # 
   shell: >
-    docker run -dt -h {{ quagga_container_name }} {{ config_mount }} --rm --privileged --name {{ quagga_container_name }} cumulusnetworks/quagga:xenial-latest
+    docker run -dt 
+    --name {{ quagga_container_name }} 
+    -h {{ quagga_container_name }} 
+    {{ config_mount }} 
+    -v /etc/quagga.daemons:/etc/quagga/daemons
+    --rm 
+    --privileged 
+    cumulusnetworks/quagga:xenial-latest
   when: "'{{ quagga_container_name }}' not in '{{ docker_psa.stdout }}'"
 
 # Quagga has some problems here, they're not using a single process in the foreground

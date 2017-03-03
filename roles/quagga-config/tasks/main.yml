@@ -1,6 +1,0 @@
----
-
-- name: Template quagga config
-  template: 
-    src: Quagga.conf.j2
-    dest: "{{ destination_config }}"
