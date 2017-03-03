@@ -5,6 +5,11 @@
     src: Quagga.conf.j2
     dest: "{{ destination_config }}"
 
+- name: Template ospfd config
+  template: 
+    src: ospfd.conf.j2
+    dest: "{{ destination_ospfd_config }}"
+
 - name: Template quagga config
   template: 
     src: daemons.j2
@@ -53,6 +58,7 @@
     -h {{ quagga_container_name }} 
     {{ config_mount }} 
     -v /etc/quagga.daemons:/etc/quagga/daemons
+    -v {{ destination_ospfd_config }}:/etc/quagga/ospfd.conf
     --rm 
     --privileged 
     cumulusnetworks/quagga:xenial-latest
