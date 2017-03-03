@@ -10,9 +10,9 @@
       ignore_errors: yes
   tasks: []
   roles:
-    # - { role: docker-install }
-    # - { role: vethcon-compile }
-    # - { role: docker-build-images }
+    - { role: docker-install }
+    - { role: vethcon-compile }
+    - { role: docker-build-images }
     - { role: run-endpoints }
     - { role: quagga-run, 
         quagga_container_name: quagga_a, 
