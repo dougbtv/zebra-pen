@@ -1,0 +1,22 @@
+---
+- name: Create quagga dockerfile dir
+  file:
+    path: /home/centos/quagga
+    state: directory
+
+- name: Template quagga Dockerfile
+  template:
+    src: Dockerfile.j2
+    dest: /home/centos/quagga/Dockerfile
+
+- name: Template quagga entrypoint script
+  template:
+    src: entrypoint.sh.j2
+    dest: /home/centos/quagga/entrypoint.sh
+    mode: 0755
+
+- name: Build the quagga image
+  shell: >
+    docker build -t {{ quagga_image_name }} .
+  args:
+    chdir: /home/centos/quagga/

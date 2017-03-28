@@ -11,6 +11,7 @@
   tasks: []
   roles:
     - { role: docker-install }
+    - { role: build-quagga }
     - { role: vethcon-compile }
     - { role: docker-build-images }
     - { role: run-endpoints }

@@ -1,0 +1,20 @@
+# Reference: https://docs.cumulusnetworks.com/display/ROH/Installing+the+Cumulus+Quagga+Package+on+a+Host+Server
+
+FROM centos:centos7
+MAINTAINER @dougbtv
+ENV build_date 2017-03-27
+RUN yum update -y && \
+    yum install -y initscripts json-c redhat-lsb-core
+ADD http://cumulusfiles.s3.amazonaws.com/roh-rhel7.tar /tmp/roh.tar
+WORKDIR /tmp
+RUN tar -xvf roh.tar && \
+    target=$(find rhel7/ | grep -P "rhel7/quagga\-\d") && \
+    rpm -ivh $target
+WORKDIR /
+ADD entrypoint.sh /entrypoint.sh
+ENTRYPOINT /entrypoint.sh
+
+# Didn't work so well...
+# ADD 99quagga_defaults.conf /etc/sysctl.d/99quagga_defaults.conf
+# RUN sysctl -p /etc/sysctl.d/99quagga_defaults.conf
+# RUN yum install -y quagga
