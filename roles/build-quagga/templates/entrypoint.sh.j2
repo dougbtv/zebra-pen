@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "Doug's custom Quagga start-up entrypoint script, starting."
+
+# Start quagga
+/usr/lib/quagga/quagga start
+
+# And tail the log to keep it running
+touch /var/log/quagga/zebra.log
+tail -f /var/log/quagga/zebra.log
+

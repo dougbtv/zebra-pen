@@ -20,10 +20,10 @@
     docker images
   register: docker_images
 
-- name: Pull quagga when not found
-  shell: >
-    docker pull cumulusnetworks/quagga:xenial-latest
-  when: "'cumulusnetworks/quagga' not in '{{ docker_images.stdout }}'"
+# - name: Pull quagga when not found
+#   shell: >
+#     docker pull cumulusnetworks/quagga:xenial-latest
+#   when: "'cumulusnetworks/quagga' not in '{{ docker_images.stdout }}'"
 
 - name: Always setup iptables forwarding rules
   shell: >
@@ -61,24 +61,24 @@
     -v {{ destination_ospfd_config }}:/etc/quagga/ospfd.conf
     --rm 
     --privileged 
-    cumulusnetworks/quagga:xenial-latest
+    {{ quagga_image_name }}
   when: "'{{ quagga_container_name }}' not in '{{ docker_psa.stdout }}'"
 
 # Quagga has some problems here, they're not using a single process in the foreground
 # So we have to baby starting it up
 # So let's list the processes in the container and start up quagga if need be
 
-- name: Install packages when debug is enabled
-  shell: >
-    docker exec -i {{ quagga_container_name }} /bin/bash -c 'apt-get update && apt-get -y install inetutils-ping net-tools tcpdump'
-  when: quagga_debug is defined
+# - name: Install packages when debug is enabled
+#   shell: >
+#     docker exec -i {{ quagga_container_name }} /bin/bash -c 'apt-get update && apt-get -y install inetutils-ping net-tools tcpdump'
+#   when: quagga_debug is defined
 
-- name: List processes in container
-  shell: >
-    docker exec -i {{ quagga_container_name }} ps ax
-  register: quagga_ps
+# - name: List processes in container
+#   shell: >
+#     docker exec -i {{ quagga_container_name }} ps ax
+#   register: quagga_ps
 
-- name: Run quagga in the container via exec
-  shell: >
-    docker exec -i {{ quagga_container_name }} /usr/lib/quagga/quagga start
-  when: "'zebra' not in '{{ quagga_ps.stdout }}'"
+# - name: Run quagga in the container via exec
+#   shell: >
+#     docker exec -i {{ quagga_container_name }} /usr/lib/quagga/quagga start
+#   when: "'zebra' not in '{{ quagga_ps.stdout }}'"
