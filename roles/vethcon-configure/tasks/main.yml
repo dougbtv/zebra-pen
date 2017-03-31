@@ -54,15 +54,35 @@
 - name: Set centos_a static route
   shell: >
     docker exec -i centos_a /bin/bash -c '
-    ip route add 192.168.4.0/24 via 192.168.2.101 dev in1
+    ip route add 192.168.4.0/24 via 192.168.2.101 dev in1;
+    ip route add 4.4.4.4/32 via 192.168.2.101 dev in1;
     '
 
 - name: Set centos_b static route
   shell: >
     docker exec -i centos_b /bin/bash -c '
     ip route add 192.168.2.0/24 via 192.168.4.100 dev out2;
+    ip route add 1.1.1.1/32 via 192.168.4.100 dev out2;
     '
 
+- name: Create aliases for Class A IP addresses
+  shell: >
+    docker exec -i {{ item.container }} /bin/bash -c '
+    ip a add {{ item.ip_address }}/255.255.255.0 dev {{ item.interface }};
+    '    
+  with_items:
+    - container: centos_a
+      interface: in1
+      ip_address: 1.1.1.1
+    - container: quagga_a
+      interface: in2
+      ip_address: 2.2.2.2
+    - container: quagga_b
+      interface: out1
+      ip_address: 3.3.3.3
+    - container: centos_b
+      interface: out2
+      ip_address: 4.4.4.4
 
 # --------------
 
