@@ -32,49 +32,70 @@
 
 - name: Create ingress interfaces
   shell: >
-    /usr/src/gocode/vethcon {{ id_centos_a.stdout }} {{ id_quagga_a.stdout }} in1 in2
+    /usr/src/gocode/vethcon 
+    -d {{ id_centos_a.stdout }}:in1:192.168.2.100/24
+    -d {{ id_quagga_a.stdout }}:in2:192.168.2.101/24
 
 - name: Create middle interfaces
   shell: >
-    /usr/src/gocode/vethcon {{ id_quagga_a.stdout }} {{ id_quagga_b.stdout }} mid1 mid2
+    /usr/src/gocode/vethcon 
+    -d {{ id_quagga_a.stdout }}:mid1:192.168.3.100/24
+    -d {{ id_quagga_b.stdout }}:mid2:192.168.3.101/24
 
 - name: Create egress interfaces
   shell: >
-    /usr/src/gocode/vethcon {{ id_quagga_b.stdout }} {{ id_centos_b.stdout }} out1 out2
+    /usr/src/gocode/vethcon 
+    -d {{ id_quagga_b.stdout }}:out1:192.168.4.100/24
+    -d {{ id_centos_b.stdout }}:out2:192.168.4.101/24
 
 # [root@cd23ab1e4135 /]# ip link set dev test2 up
 # [root@cd23ab1e4135 /]# ip a add 192.168.5.200/255.255.255.0 dev test2
 
-- name: Bring up centos_a interfaces
+- name: Set centos_a static route
   shell: >
     docker exec -i centos_a /bin/bash -c '
-    ip link set dev in1 up;
-    ip a add 192.168.2.100/255.255.255.0 dev in1;
     ip route add 192.168.4.0/24 via 192.168.2.101 dev in1
     '
 
-- name: Bring up quagga_a interfaces
-  shell: >
-    docker exec -i quagga_a /bin/bash -c '
-    ip link set dev in2 up;
-    ip a add 192.168.2.101/255.255.255.0 dev in2;
-    ip link set dev mid1 up;
-    ip a add 192.168.3.100/255.255.255.0 dev mid1;
-    '
-
-- name: Bring up quagga_b interfaces
-  shell: >
-    docker exec -i quagga_b /bin/bash -c '
-    ip link set dev mid2 up;
-    ip a add 192.168.3.101/255.255.255.0 dev mid2;
-    ip link set dev out1 up;
-    ip a add 192.168.4.100/255.255.255.0 dev out1;
-    '
-
-- name: Bring up centos_b interfaces
+- name: Set centos_b static route
   shell: >
     docker exec -i centos_b /bin/bash -c '
-    ip link set dev out2 up;
-    ip a add 192.168.4.101/255.255.255.0 dev out2;
     ip route add 192.168.2.0/24 via 192.168.4.100 dev out2;
     '
+
+
+# --------------
+
+# - name: Bring up centos_a interfaces
+#   shell: >
+#     docker exec -i centos_a /bin/bash -c '
+#     ip link set dev in1 up;
+#     ip a add 192.168.2.100/255.255.255.0 dev in1;
+#     ip route add 192.168.4.0/24 via 192.168.2.101 dev in1
+#     '
+
+# - name: Bring up quagga_a interfaces
+#   shell: >
+#     docker exec -i quagga_a /bin/bash -c '
+#     ip link set dev in2 up;
+#     ip a add 192.168.2.101/255.255.255.0 dev in2;
+#     ip link set dev mid1 up;
+#     ip a add 192.168.3.100/255.255.255.0 dev mid1;
+#     '
+
+# - name: Bring up quagga_b interfaces
+#   shell: >
+#     docker exec -i quagga_b /bin/bash -c '
+#     ip link set dev mid2 up;
+#     ip a add 192.168.3.101/255.255.255.0 dev mid2;
+#     ip link set dev out1 up;
+#     ip a add 192.168.4.100/255.255.255.0 dev out1;
+#     '
+
+# - name: Bring up centos_b interfaces
+#   shell: >
+#     docker exec -i centos_b /bin/bash -c '
+#     ip link set dev out2 up;
+#     ip a add 192.168.4.101/255.255.255.0 dev out2;
+#     ip route add 192.168.2.0/24 via 192.168.4.100 dev out2;
+#     '

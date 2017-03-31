@@ -19,10 +19,11 @@
     path: /usr/src/gocode/src/vethcon
     state: directory
 
-- name: Copy vethcon go file
-  copy:
-    src: vethcon.go
-    dest: /usr/src/gocode/src/vethcon/vethcon.go
+- name: Clone vethcon
+  git:
+    repo: 'https://github.com/s1061123/vethcon.git'
+    dest: /usr/src/gocode/src/vethcon/
+    version: master
 
 - name: Resolve vethcon dependencies
   shell: >
