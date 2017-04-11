@@ -4,6 +4,7 @@ interface {{ interface }}
 interface lo
 router ospf
  ospf router-id {{ router_id }}
+ redistribute static
  passive-interface {{ ospfd_passive_interface }}
  {% for network in ospfd_networks %} 
  network {{ network }} area 0.0.0.0

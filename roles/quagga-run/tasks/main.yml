@@ -61,8 +61,18 @@
     -v {{ destination_ospfd_config }}:/etc/quagga/ospfd.conf
     --rm 
     --privileged 
+    --net none 
     {{ quagga_image_name }}
   when: "'{{ quagga_container_name }}' not in '{{ docker_psa.stdout }}'"
+
+- name: set quagga static routes
+  shell: >
+    docker exec -i {{ quagga_container_name }} 
+    vtysh
+    -c 'config term' 
+    -c 'ip route {{ quagga_static_route }}'
+    -c 'router ospf' 
+    -c 'redistribute stat'
 
 # Quagga has some problems here, they're not using a single process in the foreground
 # So we have to baby starting it up

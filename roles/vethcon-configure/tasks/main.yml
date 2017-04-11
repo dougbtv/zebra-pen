@@ -51,36 +51,18 @@
 # [root@cd23ab1e4135 /]# ip link set dev test2 up
 # [root@cd23ab1e4135 /]# ip a add 192.168.5.200/255.255.255.0 dev test2
 
-- name: Set centos_a static route
+- name: Set centos_x default routes
   shell: >
-    docker exec -i centos_a /bin/bash -c '
-    ip route add 192.168.4.0/24 via 192.168.2.101 dev in1;
-    ip route add 2.2.2.2/32 via 192.168.2.101 dev in1;
-    ip route add 3.3.3.3/32 via 192.168.2.101 dev in1;
-    ip route add 4.4.4.4/32 via 192.168.2.101 dev in1;
+    docker exec -i {{ item.container }} /bin/bash -c '
+    ip route add 0.0.0.0/0 via {{ item.via }} dev {{ item.dev }};
     '
-
-- name: Set centos_b static route
-  shell: >
-    docker exec -i centos_b /bin/bash -c '
-    ip route add 192.168.2.0/24 via 192.168.4.100 dev out2;
-    ip route add 1.1.1.1/32 via 192.168.4.100 dev out2;
-    ip route add 2.2.2.2/32 via 192.168.4.100 dev out2;
-    ip route add 3.3.3.3/32 via 192.168.4.100 dev out2;
-    '
-
-- name: Set quagga_a static route
-  shell: >
-    docker exec -i quagga_a /bin/bash -c '
-    ip route add 4.4.4.4/32 via 192.168.3.101 dev mid1;
-    '
-
-- name: Set quagga_b static route
-  shell: >
-    docker exec -i quagga_b /bin/bash -c '
-    ip route add 4.4.4.4/32 via 192.168.4.101 dev out1;
-    '
-
+  with_items:
+    - container: centos_a
+      via: "192.168.2.101"
+      dev: in1
+    - container: centos_b
+      via: "192.168.4.100"
+      dev: out2
 
 - name: Create aliases for Class A IP addresses
   shell: >
@@ -100,39 +82,3 @@
     - container: centos_b
       interface: out2
       ip_address: 4.4.4.4
-
-# --------------
-
-# - name: Bring up centos_a interfaces
-#   shell: >
-#     docker exec -i centos_a /bin/bash -c '
-#     ip link set dev in1 up;
-#     ip a add 192.168.2.100/255.255.255.0 dev in1;
-#     ip route add 192.168.4.0/24 via 192.168.2.101 dev in1
-#     '
-
-# - name: Bring up quagga_a interfaces
-#   shell: >
-#     docker exec -i quagga_a /bin/bash -c '
-#     ip link set dev in2 up;
-#     ip a add 192.168.2.101/255.255.255.0 dev in2;
-#     ip link set dev mid1 up;
-#     ip a add 192.168.3.100/255.255.255.0 dev mid1;
-#     '
-
-# - name: Bring up quagga_b interfaces
-#   shell: >
-#     docker exec -i quagga_b /bin/bash -c '
-#     ip link set dev mid2 up;
-#     ip a add 192.168.3.101/255.255.255.0 dev mid2;
-#     ip link set dev out1 up;
-#     ip a add 192.168.4.100/255.255.255.0 dev out1;
-#     '
-
-# - name: Bring up centos_b interfaces
-#   shell: >
-#     docker exec -i centos_b /bin/bash -c '
-#     ip link set dev out2 up;
-#     ip a add 192.168.4.101/255.255.255.0 dev out2;
-#     ip route add 192.168.2.0/24 via 192.168.4.100 dev out2;
-#     '
