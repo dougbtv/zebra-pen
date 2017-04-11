@@ -28,6 +28,7 @@
         route_mask: "192.168.4.101/32",
         route_via: "192.168.3.101",
         classa_route_mask: "4.4.4.4/32",
+        router_id: "2.2.2.2",
         classa_route_via: "192.168.3.101"
       }
     - { role: quagga-run,
@@ -43,6 +44,7 @@
         route_mask: "192.168.4.101/32",
         route_via: "192.168.4.101",
         classa_route_mask: "4.4.4.4/32",
+        router_id: "3.3.3.3",
         classa_route_via: "192.168.4.101"
        }
     - { role: vethcon-configure }
