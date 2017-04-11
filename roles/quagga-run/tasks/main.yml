@@ -61,6 +61,7 @@
     -v {{ destination_ospfd_config }}:/etc/quagga/ospfd.conf
     --rm 
     --privileged 
+    --net none 
     {{ quagga_image_name }}
   when: "'{{ quagga_container_name }}' not in '{{ docker_psa.stdout }}'"
 
