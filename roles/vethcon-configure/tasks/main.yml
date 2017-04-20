@@ -67,18 +67,18 @@
 - name: Create aliases for Class A IP addresses
   shell: >
     docker exec -i {{ item.container }} /bin/bash -c '
-    ip a add {{ item.ip_address }}/255.255.255.0 dev {{ item.interface }};
+    ip a add {{ item.ip_address }}/255.255.255.255 dev lo;
     '    
   with_items:
     - container: centos_a
-      interface: in1
+      # interface: in1
       ip_address: 1.1.1.1
     - container: quagga_a
-      interface: in2
+      # interface: in2
       ip_address: 2.2.2.2
     - container: quagga_b
-      interface: out1
+      # interface: out1
       ip_address: 3.3.3.3
     - container: centos_b
-      interface: out2
+      # interface: out2
       ip_address: 4.4.4.4
