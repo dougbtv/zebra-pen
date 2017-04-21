@@ -1,0 +1,5 @@
+--- 
+
+- name: Run custom centos docker images
+  shell: >
+    docker run --net none -dt -h {{ target_container_name }} --name {{ target_container_name }} --privileged veth_centos /bin/bash

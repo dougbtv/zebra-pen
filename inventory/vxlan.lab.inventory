@@ -1,0 +1,19 @@
+host_a ansible_host=192.168.122.25
+host_b ansible_host=192.168.122.52
+
+[all_vms]
+host_a
+host_b
+
+[first_host]
+host_a
+
+[last_host]
+host_b
+
+[all_vms:vars]
+ansible_ssh_user=centos
+ansible_become=true
+ansible_become_user=root
+ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p root@192.168.1.119"'
+ansible_ssh_private_key_file=/home/doug/.ssh/id_testvms

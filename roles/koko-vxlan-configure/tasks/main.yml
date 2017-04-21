@@ -1,0 +1,66 @@
+---
+
+# vxlan example.
+
+- name: Create veth interfaces
+  shell: >
+    /usr/src/gocode/vethcon 
+    -d {{ endpoint.container_name }}:{{ endpoint.ifname }}:{{ endpoint.ipaddr }}/24
+    -d {{ router_veth.container_name }}:{{ router_veth.ifname }}:{{ router_veth.ipaddr }}/24
+
+# ./koko {-d <container>:<linkname>[:<IPv4 addr>/<prefixlen>] |
+#        -n <netns name>:<linkname>[:<IPv4 addr>/<prefixlen>] }
+#        -x <parent interface>:<remote endpoint IP addr>:<vxlan id> 
+
+- name: Create middle interfaces
+  shell: >
+    /usr/src/gocode/vethcon 
+    -d {{ router_vxlan.container_name }}:{{ router_vxlan.ifname }}:{{ router_vxlan.ipaddr }}/24
+    -x eth0:{{ router_vxlan.remote_ipaddr }}:{{ vxlan_id }} 
+
+# - name: Create middle interfaces
+#   shell: >
+#     /usr/src/gocode/vethcon 
+#     -d {{ id_quagga_a.stdout }}:mid1:192.168.3.100/24
+#     -d {{ id_quagga_b.stdout }}:mid2:192.168.3.101/24
+
+# - name: Create egress interfaces
+#   shell: >
+#     /usr/src/gocode/vethcon 
+#     -d {{ id_quagga_b.stdout }}:out1:192.168.4.100/24
+#     -d {{ id_centos_b.stdout }}:out2:192.168.4.101/24
+
+# # [root@cd23ab1e4135 /]# ip link set dev test2 up
+# # [root@cd23ab1e4135 /]# ip a add 192.168.5.200/255.255.255.0 dev test2
+
+# - name: Set centos_x default routes
+#   shell: >
+#     docker exec -i {{ item.container }} /bin/bash -c '
+#     ip route add 0.0.0.0/0 via {{ item.via }} dev {{ item.dev }};
+#     '
+#   with_items:
+#     - container: centos_a
+#       via: "192.168.2.101"
+#       dev: in1
+#     - container: centos_b
+#       via: "192.168.4.100"
+#       dev: out2
+
+# - name: Create aliases for Class A IP addresses
+#   shell: >
+#     docker exec -i {{ item.container }} /bin/bash -c '
+#     ip a add {{ item.ip_address }}/255.255.255.255 dev lo;
+#     '    
+#   with_items:
+#     - container: centos_a
+#       # interface: in1
+#       ip_address: 1.1.1.1
+#     - container: quagga_a
+#       # interface: in2
+#       ip_address: 2.2.2.2
+#     - container: quagga_b
+#       # interface: out1
+#       ip_address: 3.3.3.3
+#     - container: centos_b
+#       # interface: out2
+#       ip_address: 4.4.4.4
