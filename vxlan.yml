@@ -1,19 +1,19 @@
 ---
-# # Run 2 quagga instances in containers on all vms
-# - hosts: all_vms
-#   vars_files:
-#     - vars/all.yml
-#   pre_tasks:
-#     - name: Remove all running containers
-#       shell: >
-#         docker rm $(docker kill $(docker ps -aq))
-#       ignore_errors: yes
-#   tasks: []
-#   roles:
-#     - { role: docker-install }
-#     - { role: build-quagga }
-#     - { role: vethcon-compile }
-#     - { role: docker-build-images }
+# Run 2 quagga instances in containers on all vms
+- hosts: all_vms
+  vars_files:
+    - vars/all.yml
+  pre_tasks:
+    - name: Remove all running containers
+      shell: >
+        docker rm $(docker kill $(docker ps -aq))
+      ignore_errors: yes
+  tasks: []
+  roles:
+    - { role: docker-install }
+    - { role: build-quagga }
+    - { role: vethcon-compile }
+    - { role: docker-build-images }
 
 - hosts: first_host
   vars_files:

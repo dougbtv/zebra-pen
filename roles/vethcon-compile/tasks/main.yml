@@ -16,28 +16,28 @@
 
 - name: Create go source directory
   file:
-    path: /usr/src/gocode/src/vethcon
+    path: /usr/src/gocode/src/koko
     state: directory
 
-- name: Clone vethcon
+- name: Clone koko
   git:
-    repo: 'https://github.com/s1061123/vethcon.git'
-    dest: /usr/src/gocode/src/vethcon/
+    repo: 'https://github.com/redhat-nfvpe/koko.git'
+    dest: /usr/src/gocode/src/koko/
     version: master
 
-- name: Resolve vethcon dependencies
+- name: Resolve koko dependencies
   shell: >
-    go get vethcon
+    go get koko
   args:
     creates: /usr/src/gocode/src/github.com
     chdir: /usr/src/gocode/
   environment: "{{ go_environment }}"
 
-- name: Compile vethcon binary
+- name: Compile koko binary
   shell: >
-    go build vethcon
+    go build koko
   args:
-    creates: /usr/src/gocode/vethcon
+    creates: /usr/src/gocode/koko
     chdir: /usr/src/gocode/
   environment: "{{ go_environment }}"
 

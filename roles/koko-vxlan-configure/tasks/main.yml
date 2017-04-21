@@ -4,7 +4,7 @@
 
 - name: Create veth interfaces
   shell: >
-    /usr/src/gocode/vethcon 
+    /usr/src/gocode/koko 
     -d {{ endpoint.container_name }}:{{ endpoint.ifname }}:{{ endpoint.ipaddr }}/24
     -d {{ router_veth.container_name }}:{{ router_veth.ifname }}:{{ router_veth.ipaddr }}/24
 
@@ -14,19 +14,19 @@
 
 - name: Create middle interfaces
   shell: >
-    /usr/src/gocode/vethcon 
+    /usr/src/gocode/koko 
     -d {{ router_vxlan.container_name }}:{{ router_vxlan.ifname }}:{{ router_vxlan.ipaddr }}/24
     -x eth0:{{ router_vxlan.remote_ipaddr }}:{{ vxlan_id }} 
 
 # - name: Create middle interfaces
 #   shell: >
-#     /usr/src/gocode/vethcon 
+#     /usr/src/gocode/koko 
 #     -d {{ id_quagga_a.stdout }}:mid1:192.168.3.100/24
 #     -d {{ id_quagga_b.stdout }}:mid2:192.168.3.101/24
 
 # - name: Create egress interfaces
 #   shell: >
-#     /usr/src/gocode/vethcon 
+#     /usr/src/gocode/koko 
 #     -d {{ id_quagga_b.stdout }}:out1:192.168.4.100/24
 #     -d {{ id_centos_b.stdout }}:out2:192.168.4.101/24
 
