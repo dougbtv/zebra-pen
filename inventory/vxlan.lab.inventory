@@ -1,5 +1,5 @@
-host_a ansible_host=192.168.122.25
-host_b ansible_host=192.168.122.52
+host_a ansible_host=192.168.122.66
+host_b ansible_host=192.168.122.192
 
 [all_vms]
 host_a
