@@ -1,2 +1,2 @@
 FROM centos:centos7
-RUN yum install -y iproute net-tools tcpdump nano vi
+RUN yum install -y traceroute iproute net-tools tcpdump nano vi

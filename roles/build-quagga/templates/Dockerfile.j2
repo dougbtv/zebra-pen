@@ -4,7 +4,7 @@ FROM centos:centos7
 MAINTAINER @dougbtv
 ENV build_date 2017-03-27
 RUN yum update -y && \
-    yum install -y tcpdump iproute initscripts json-c redhat-lsb-core
+    yum install -y tcpdump iproute traceroute initscripts json-c redhat-lsb-core
 ADD http://cumulusfiles.s3.amazonaws.com/roh-rhel7.tar /tmp/roh.tar
 WORKDIR /tmp
 RUN tar -xvf roh.tar && \
