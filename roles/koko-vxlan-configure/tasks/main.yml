@@ -1,0 +1,44 @@
+---
+
+# - name: Delete interfaces
+#   shell: >
+#     ip link delete {{ item }}
+#   ignore_errors: yes
+#   with_items:
+#     - "{{ endpoint.ifname }}"
+#     - "{{ router_veth.ifname }}"
+#     - "{{ router_vxlan.ifname }}"
+
+- name: Create veth interfaces
+  shell: >
+    /usr/src/gocode/koko 
+    -d {{ endpoint.container_name }}:{{ endpoint.ifname }}:{{ endpoint.ipaddr }}/24
+    -d {{ router_veth.container_name }}:{{ router_veth.ifname }}:{{ router_veth.ipaddr }}/24
+
+# vxlan example.
+# ./koko {-d <container>:<linkname>[:<IPv4 addr>/<prefixlen>] |
+#        -n <netns name>:<linkname>[:<IPv4 addr>/<prefixlen>] }
+#        -x <parent interface>:<remote endpoint IP addr>:<vxlan id> 
+
+- name: Create middle (vxlan) interfaces
+  shell: >
+    /usr/src/gocode/koko 
+    -d {{ router_vxlan.container_name }}:{{ router_vxlan.ifname }}:{{ router_vxlan.ipaddr }}/24
+    -x eth0:{{ router_vxlan.remote_ipaddr }}:{{ vxlan_id }}
+
+- name: Set endpoint default routes
+  shell: >
+    docker exec -i {{ endpoint.container_name }} /bin/bash -c '
+    ip route add 0.0.0.0/0 via {{ endpoint.defroute }} dev {{ endpoint.ifname }};
+    '
+
+- name: Create aliases for Class A IP addresses
+  shell: >
+    docker exec -i {{ item.container }} /bin/bash -c '
+    ip a add {{ item.ip_address }}/255.255.255.255 dev lo;
+    '    
+  with_items:
+    - container: "{{ endpoint.container_name }}"
+      ip_address: "{{ endpoint.public_ip }}"
+    - container: "{{ router_veth.container_name }}"
+      ip_address: "{{ router_veth.public_ip }}"
