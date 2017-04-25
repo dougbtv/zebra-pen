@@ -12,7 +12,7 @@
 #   roles:
 #     - { role: docker-install }
 #     - { role: build-quagga }
-#     - { role: vethcon-compile }
+#     - { role: koko-compile }
 #     - { role: docker-build-images }
 
 - hosts: first_host
