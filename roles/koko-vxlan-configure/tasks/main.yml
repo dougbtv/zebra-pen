@@ -24,7 +24,7 @@
 #        -n <netns name>:<linkname>[:<IPv4 addr>/<prefixlen>] }
 #        -x <parent interface>:<remote endpoint IP addr>:<vxlan id> 
 
-- name: Create middle interfaces
+- name: Create middle (vxlan) interfaces
   shell: >
     /usr/src/gocode/koko 
     -d {{ router_vxlan.container_name }}:{{ router_vxlan.ifname }}:{{ router_vxlan.ipaddr }}/24
