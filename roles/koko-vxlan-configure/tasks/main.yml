@@ -9,10 +9,6 @@
 #     - "{{ router_veth.ifname }}"
 #     - "{{ router_vxlan.ifname }}"
 
-- name: Debug shit
-  debug:
-    msg: "{{ endpoint.ifname }} {{ router_veth.ifname }} {{ router_vxlan.ifname }}"
-
 - name: Create veth interfaces
   shell: >
     /usr/src/gocode/koko 
