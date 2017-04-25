@@ -47,11 +47,14 @@
           container_name: centos_a,
           ifname: in1,
           ipaddr: 192.168.2.100,
+          defroute: 192.168.2.101,
+          public_ip: 1.1.1.1,
         },
         router_veth: {
           container_name: quagga_a,
           ifname: in2,
           ipaddr: 192.168.2.101,
+          public_ip: 2.2.2.2,
         },
         router_vxlan: {
           container_name: quagga_a,
@@ -95,11 +98,14 @@
           container_name: centos_b,
           ifname: out2,
           ipaddr: 192.168.4.101,
+          defroute: 192.168.4.100,
+          public_ip: 4.4.4.4,
         },
         router_veth: {
           container_name: quagga_b,
           ifname: out1,
           ipaddr: 192.168.4.100,
+          public_ip: 3.3.3.3,
         },
         router_vxlan: {
           container_name: quagga_b,
@@ -107,7 +113,6 @@
           ipaddr: 192.168.3.101,
           remote_ipaddr: "{{ hostvars['host_a']['ansible_host'] }}",
         },
-
       }
 
 
