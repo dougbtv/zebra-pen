@@ -14,18 +14,30 @@ CentOS A -> Router A -> Router B -> CentOS B
 
 ## About the architecture
 
-![layout diagram](http://i.imgur.com/KYtqu9R.png)
+![layout diagram](http://i.imgur.com/oXQQWjy.png)
 
-In the current iteration we're going to use a specialized script, [vethcon](https://github.com/s1061123/vethcon), created by [Tomo](https://github.com/s1061123) which allows us to specifically craft network interfaces for each container. These allow us to create 2 interfaces (one in each container) that are connected. This playbook spins up the diagrammed containers, and creates the interfaces as diagrammed above.
+In the current iteration we're going to use a specialized script, [koko](https://github.com/redhat-nfvpe/koko), created by [Tomo](https://github.com/s1061123) which allows us to specifically craft network interfaces for each container. These allow us to create 2 interfaces (one in each container) that are connected. This playbook spins up the diagrammed containers, and creates the interfaces as diagrammed above.
 
 This configuration uses OSPFd in Quagga for routing from Centos A through the two routers (Quagga A & Quagga B) to Centos B, and then back through in the reverse direction.
 
-## Running the playbook
+## Running the playbooks
+
+There's basically two styles here -- one of which uses a single host, with all veth connections between docker containers on that single host. The second style uses two VMs and has vxlan between the routers on the two hosts (and veth connections for containers on the same local host).
+
+### Single Host
 
 To kick off this playbook, use the inventory file located at `./inventory/single_vm.inventory` as a basis and then run:
 
 ```
-$ ansible-playbook -i inventory/single_vm.inventory vethcon-single-vm.yml
+$ ansible-playbook -i inventory/single_vm.inventory koko-single-vm.yml
+```
+
+### Two-hosts (with VXLAN)
+
+To kick off this playbook, use the inventory file located at `./inventory/vxlan.lab.inventory` as a basis and then run:
+
+```
+$ ansible-playbook -i ./inventory/vxlan.lab.inventory vxlan.yml
 ```
 
 ## Verifying the results.
