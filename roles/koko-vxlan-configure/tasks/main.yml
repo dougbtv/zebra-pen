@@ -24,7 +24,7 @@
   shell: >
     /usr/src/gocode/koko 
     -d {{ router_vxlan.container_name }}:{{ router_vxlan.ifname }}:{{ router_vxlan.ipaddr }}/24
-    -x eth0:{{ router_vxlan.remote_ipaddr }}:{{ vxlan_id }}
+    -x {{ vxlan_ext_if }}:{{ router_vxlan.remote_ipaddr }}:{{ vxlan_id }}
 
 - name: Set endpoint default routes
   shell: >

@@ -1,15 +1,12 @@
 ---
-# Run 2 quagga instances in containers on all vms
-- hosts: all_vms
+# Just install docker on host a.
+- hosts: first_host
   vars_files:
     - vars/all.yml
   pre_tasks: []
   tasks: []
   roles:
     - { role: docker-install }
-    - { role: build-quagga }
-    - { role: koko-compile }
-    - { role: docker-build-images }
 
 # Run 2 quagga instances in containers on all vms
 - hosts: all_vms
@@ -18,7 +15,6 @@
   pre_tasks: []
   tasks: []
   roles:
-    - { role: docker-install }
     - { role: build-quagga }
     - { role: koko-compile }
     - { role: docker-build-images }
@@ -47,11 +43,12 @@
         route_mask: "192.168.4.101/32",
         route_via: "192.168.3.101",
         router_id: "2.2.2.2",
-        quagga_static_route: ["1.1.1.1 255.255.255.255 192.168.2.100"],
+        quagga_static_route: ["1.1.1.1 255.255.255.255 192.168.2.100",]
+          # - "4.4.4.4 255.255.255.255 192.168.3.101"
       }
     - { role: koko-vxlan-configure,
         vxlan_id: 10,
-        vxlan_ext_if: "eth0",
+        vxlan_ext_if: "enp1s0f1",
         endpoint: {
           container_name: centos_a,
           ifname: in1,
@@ -99,7 +96,8 @@
         route_via: "192.168.4.101",
         classa_route_mask: "4.4.4.4/32",
         router_id: "3.3.3.3",
-        quagga_static_route: ["4.4.4.4 255.255.255.255 192.168.4.101"],
+        quagga_static_route: ["4.4.4.4 255.255.255.255 192.168.4.101",]
+          # - "1.1.1.1 255.255.255.255 192.168.3.100"
        }
     - { role: koko-vxlan-configure,
         vxlan_id: 10,
@@ -122,7 +120,8 @@
           ifname: mid2,
           ipaddr: 192.168.3.101,
           # THIS NEEDS TO BE LAB B REMOTE IP.
-          remote_ipaddr: "{{ hostvars['host_a']['ansible_host'] }}",
+          remote_ipaddr: "204.13.40.234",
+
         },
       }
 

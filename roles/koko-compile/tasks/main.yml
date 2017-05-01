@@ -21,9 +21,9 @@
 
 - name: Clone koko
   git:
-    repo: 'https://github.com/redhat-nfvpe/koko.git'
+    repo: 'https://github.com/dougbtv/koko.git'
     dest: /usr/src/gocode/src/koko/
-    version: master
+    version: procnamespace
 
 - name: Resolve koko dependencies
   shell: >
