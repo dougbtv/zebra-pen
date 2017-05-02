@@ -38,6 +38,8 @@ spec:
   containers:
     - name: centosb
       image: dougbtv/centos-network
+      securityContext:
+        privileged: true
       command: ["/bin/bash", "-c", "while true; do sleep 2; done"]
 ---
 apiVersion: v1

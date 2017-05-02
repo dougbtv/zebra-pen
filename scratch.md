@@ -206,3 +206,12 @@ Create a pod to test...
 show ip ospf database
 ```
 
+---
+
+# Using OpenShift playbooks.
+
+---
+
+* Setup non-openshift-side `...`
+* First, create pods `openshift-create-pods.yml`
+* Then koko your pods `openshift-koko-pods.yml`

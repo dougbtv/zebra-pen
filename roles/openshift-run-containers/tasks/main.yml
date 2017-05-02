@@ -8,3 +8,8 @@
   template:
     src: router_scc.yaml.j2
     dest: /etc/router_scc.yaml
+
+- name: Create SCC & pods
+  shell: >
+    oc create -f /etc/router_scc.yaml;
+    oc create -f /etc/router_pods.yaml
