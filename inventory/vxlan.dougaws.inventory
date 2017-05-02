@@ -12,6 +12,7 @@ host_a
 host_b
 
 [first_host:vars]
+vxlan_interface=enp1s0f1
 ansible_ssh_user=root
 # ansible_become=true
 # ansible_become_user=root
@@ -19,6 +20,7 @@ ansible_ssh_user=root
 # ansible_ssh_private_key_file=/home/doug/.ssh/id_testvms
 
 [last_host:vars]
+vxlan_interface=eth0
 ansible_ssh_user=centos
 ansible_become=true
 ansible_become_user=root

@@ -200,3 +200,9 @@ volumes:
 
 Create a pod to test...
 
+## OSPF database not up to date over wan?
+
+```
+show ip ospf database
+```
+

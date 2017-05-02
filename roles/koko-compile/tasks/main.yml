@@ -8,6 +8,7 @@
     - nano 
     - tree 
     - git
+  ignore_errors: yes
 
 - name: Setup environment variables
   set_fact:

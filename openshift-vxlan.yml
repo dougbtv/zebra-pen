@@ -12,7 +12,16 @@
 - hosts: all_vms
   vars_files:
     - vars/all.yml
-  pre_tasks: []
+  pre_tasks:
+    - name: Remove all running containers
+      shell: >
+        docker rm $(docker kill {{ item }})
+      with_items:
+        - quagga_a
+        - quagga_b
+        - centos_a
+        - centos_b
+      ignore_errors: yes
   tasks: []
   roles:
     - { role: build-quagga }
@@ -22,11 +31,7 @@
 - hosts: first_host
   vars_files:
     - vars/all.yml
-  pre_tasks:
-    - name: Remove all running containers
-      shell: >
-        docker rm $(docker kill $(docker ps -aq))
-      ignore_errors: yes
+  pre_tasks: []
   tasks: []
   roles:
     - { role: run-single-endpoint, target_container_name: "centos_a" }
@@ -48,7 +53,7 @@
       }
     - { role: koko-vxlan-configure,
         vxlan_id: 10,
-        vxlan_ext_if: "enp1s0f1",
+        vxlan_ext_if: "{{ vxlan_interface }}",
         endpoint: {
           container_name: centos_a,
           ifname: in1,
@@ -74,11 +79,7 @@
 - hosts: last_host
   vars_files:
     - vars/all.yml
-  pre_tasks:
-    - name: Remove all running containers
-      shell: >
-        docker rm $(docker kill $(docker ps -aq))
-      ignore_errors: yes
+  pre_tasks: []
   tasks: []
   roles:
     - { role: run-single-endpoint, target_container_name: "centos_b" }
@@ -101,7 +102,7 @@
        }
     - { role: koko-vxlan-configure,
         vxlan_id: 10,
-        vxlan_ext_if: "eth0",
+        vxlan_ext_if: "{{ vxlan_interface }}",
         endpoint: {
           container_name: centos_b,
           ifname: out2,
