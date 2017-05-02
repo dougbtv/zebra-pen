@@ -74,3 +74,14 @@
       ip_address: "{{ endpoint.public_ip }}"
     - container: "{{ proper_container_quagga.stdout }}"
       ip_address: "{{ router_veth.public_ip }}"
+
+
+- name: set quagga static routes
+  shell: >
+    docker exec -i {{ proper_container_quagga.stdout }}
+    vtysh
+    -c 'config term' 
+    -c 'ip route {{ item }}'
+    -c 'router ospf' 
+    -c 'redistribute stat'
+  with_items: "{{ quagga_static_route }}"

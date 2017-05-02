@@ -212,6 +212,54 @@ show ip ospf database
 
 ---
 
-* Setup non-openshift-side `...`
+* Setup non-openshift-side `openshift-vxlan.yml`
 * First, create pods `openshift-create-pods.yml`
+    - This will fail if you don't delete what's already there.
 * Then koko your pods `openshift-koko-pods.yml`
+
+```
+quaggab# show running-config 
+Building configuration...
+
+Current configuration:
+!
+!
+interface eth0
+ link-detect
+!
+interface lo
+ link-detect
+!
+interface mid2
+ ip ospf mtu-ignore
+ ip ospf network point-to-point
+ ipv6 nd suppress-ra
+ link-detect
+!
+interface out1
+ ipv6 nd suppress-ra
+ link-detect
+!
+router ospf
+ ospf router-id 3.3.3.3
+ redistribute static
+ passive-interface out1
+ network 2.2.2.0/24 area 0.0.0.0
+ network 3.3.3.0/24 area 0.0.0.0
+ network 192.168.3.0/24 area 0.0.0.0
+ network 192.168.4.0/24 area 0.0.0.0
+!
+ip forwarding
+!
+line vty
+!
+end
+quaggab# 
+
+```
+
+
+```
+[root@centos-host centos]# ssh -i ~/.ssh/ajay_aws -R 4789:localhost:4789 ec2-user@54.200.66.51
+```
+

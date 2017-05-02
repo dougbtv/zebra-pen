@@ -9,6 +9,7 @@
     - { role: koko-vxlan-openshift,
         vxlan_id: 10,
         vxlan_ext_if: "{{ vxlan_interface }}",
+        quagga_static_route: ["4.4.4.4 255.255.255.255 192.168.4.101",],
         endpoint: {
           container_name: centosb,
           ifname: out2,
@@ -27,6 +28,8 @@
           ifname: mid2,
           ipaddr: 192.168.3.101,
           # THIS NEEDS TO BE LAB B REMOTE IP.
+          # ajay lab: 66.187.233.206
+          # laboratory b: 204.13.40.234
           remote_ipaddr: "204.13.40.234",
 
         },
