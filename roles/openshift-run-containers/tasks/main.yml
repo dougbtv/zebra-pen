@@ -1,2 +1,10 @@
 ---
-name: Template router pods yaml
+- name: Template router pods yaml
+  template:
+    src: router_pods.yaml.j2
+    dest: /etc/router_pods.yaml
+
+- name: Template router SCC
+  template:
+    src: router_scc.yaml.j2
+    dest: /etc/router_scc.yaml
