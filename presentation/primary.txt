@@ -1,0 +1,5 @@
+# openshift
+ssh -i ~/.ssh/aws_id centos@52.32.5.155
+
+# laboatory b
+ssh root@192.168.1.139
