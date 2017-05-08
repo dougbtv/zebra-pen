@@ -30,7 +30,7 @@
           # THIS NEEDS TO BE LAB B REMOTE IP.
           # ajay lab: 66.187.233.206
           # laboratory b: 204.13.40.234
-          remote_ipaddr: "204.13.40.234",
+          remote_ipaddr: "{{ vxlan_remote_ipaddr }}",
 
         },
       }
