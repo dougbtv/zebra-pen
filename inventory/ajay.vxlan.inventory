@@ -1,0 +1,20 @@
+host_a ansible_host=10.0.1.2
+host_b ansible_host=10.0.1.3
+
+[all_vms]
+host_a
+host_b
+
+[first_host]
+host_a
+
+[last_host]
+host_b
+
+[all_vms:vars]
+ansible_ssh_user=root
+
+# If you ssh as another user, use this block instead
+#ansible_ssh_user=centos
+#ansible_become=true
+#ansible_become_user=root
