@@ -37,8 +37,9 @@
   ignore_errors: yes
 
 - name: Get list of running containers
+  # Single quotes were messing up my conditional below...
   shell: >
-    docker ps -a
+    docker ps -a | sed -e "s/'//"
   register: docker_psa
 
 - name: Default volume fact
