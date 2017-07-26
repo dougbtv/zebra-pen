@@ -44,6 +44,9 @@ $ ansible-playbook -i ./inventory/vxlan.lab.inventory vxlan.yml
 
 So you wanna use it with openshift?
 
+### Install OpenShift
+
+
 First, [spin up openshift manually](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) -- use `oc cluster up` to make a all-in-one openshift instance for ease-of-use.
 
 Here's how I setup my openshift
@@ -83,6 +86,26 @@ oc login -u system:admin
 
 # Check the cluster (err, AIO) status.
 oc status
+```
+
+### Running the OpenShift playbooks
+
+First, you generally setup the requirements for each machine (building koko) and starting containers on the vanilla host.
+
+```
+ansible-playbook -i inventory/vxlan.dougaws.inventory openshift-vxlan.yml 
+```
+
+Then we create the pods on the openshift host.
+
+```
+ansible-playbook -i inventory/vxlan.dougaws.inventory openshift-create-pods.yml
+```
+
+Finally, we apply use koko to those pods.
+
+```
+ansible-playbook -i inventory/vxlan.dougaws.inventory openshift-koko-pods.yml
 ```
 
 ## Verifying the results.
