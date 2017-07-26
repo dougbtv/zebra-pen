@@ -40,6 +40,51 @@ To kick off this playbook, use the inventory file located at `./inventory/vxlan.
 $ ansible-playbook -i ./inventory/vxlan.lab.inventory vxlan.yml
 ```
 
+## OpenShift style.
+
+So you wanna use it with openshift?
+
+First, [spin up openshift manually](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) -- use `oc cluster up` to make a all-in-one openshift instance for ease-of-use.
+
+Here's how I setup my openshift
+
+```
+# Set ip_forward to 1
+/sbin/sysctl -w net.ipv4.ip_forward=1
+
+# Install docker (plus a handy wget)
+yum install -y docker wget
+
+# Setup docker to allow an "insecure" registry.
+sed -i -e "s|\# INSECURE_REGISTRY='--insecure-registry'|INSECURE_REGISTRY='--insecure-registry 172.30.0.0/16'|" /etc/sysconfig/docker
+
+# Start and enable docker.
+systemctl daemon-reload
+systemctl start docker
+systemctl enable docker
+
+# Download the oc command line tool.
+wget https://github.com/openshift/origin/releases/download/v3.6.0-rc.0/openshift-origin-client-tools-v3.6.0-rc.0-98b3d56-linux-64bit.tar.gz
+tar -xzvf openshift-origin-client-tools-v3.6.0-rc.0-98b3d56-linux-64bit.tar.gz 
+cp openshift-origin-client-tools-v3.6.0-rc.0-98b3d56-linux-64bit/oc /usr/bin/
+chmod +x /usr/bin/oc
+
+# Check that it's in your path.
+oc version
+
+# Bring up the cluster.
+oc cluster up
+
+# See that you can get pods (likely nothing there yet)
+oc get pods
+
+# Login as admin.
+oc login -u system:admin
+
+# Check the cluster (err, AIO) status.
+oc status
+```
+
 ## Verifying the results.
 
 Once that has run, you can verify that it is working by checking the running containers on a host, and then entering the `centos_a` container, and pinging the IP address for `centos_b`.
