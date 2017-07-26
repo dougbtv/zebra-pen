@@ -37,8 +37,8 @@
 - name: Create veth interfaces (on infra container)
   shell: >
     /usr/src/gocode/koko 
-    -d {{ infra_container_endpoint.stdout }}:{{ endpoint.ifname }}:{{ endpoint.ipaddr }}/24
-    -d {{ infra_container_quagga.stdout }}:{{ router_veth.ifname }}:{{ router_veth.ipaddr }}/24
+    -d {{ infra_container_endpoint.stdout }},{{ endpoint.ifname }},{{ endpoint.ipaddr }}/24
+    -d {{ infra_container_quagga.stdout }},{{ router_veth.ifname }},{{ router_veth.ipaddr }}/24
 
 # vxlan example.
 # ./koko {-d <container>:<linkname>[:<IPv4 addr>/<prefixlen>] |
@@ -48,8 +48,8 @@
 - name: Create middle (vxlan) interfaces (on infra container)
   shell: >
     /usr/src/gocode/koko 
-    -d {{ infra_container_quagga.stdout }}:{{ router_vxlan.ifname }}:{{ router_vxlan.ipaddr }}/24
-    -x {{ vxlan_ext_if }}:{{ router_vxlan.remote_ipaddr }}:{{ vxlan_id }}
+    -d {{ infra_container_quagga.stdout }},{{ router_vxlan.ifname }},{{ router_vxlan.ipaddr }}/24
+    -x {{ vxlan_ext_if }},{{ router_vxlan.remote_ipaddr }},{{ vxlan_id }}
 
 - name: Delete eth0 interfaces
   shell: >
