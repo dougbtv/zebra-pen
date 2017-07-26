@@ -12,8 +12,8 @@
 - name: Create veth interfaces
   shell: >
     /usr/src/gocode/koko 
-    -d {{ endpoint.container_name }}:{{ endpoint.ifname }}:{{ endpoint.ipaddr }}/24
-    -d {{ router_veth.container_name }}:{{ router_veth.ifname }}:{{ router_veth.ipaddr }}/24
+    -d {{ endpoint.container_name }},{{ endpoint.ifname }},{{ endpoint.ipaddr }}/24
+    -d {{ router_veth.container_name }},{{ router_veth.ifname }},{{ router_veth.ipaddr }}/24
 
 # vxlan example.
 # ./koko {-d <container>:<linkname>[:<IPv4 addr>/<prefixlen>] |
@@ -23,8 +23,8 @@
 - name: Create middle (vxlan) interfaces
   shell: >
     /usr/src/gocode/koko 
-    -d {{ router_vxlan.container_name }}:{{ router_vxlan.ifname }}:{{ router_vxlan.ipaddr }}/24
-    -x {{ vxlan_ext_if }}:{{ router_vxlan.remote_ipaddr }}:{{ vxlan_id }}
+    -d {{ router_vxlan.container_name }},{{ router_vxlan.ifname }},{{ router_vxlan.ipaddr }}/24
+    -x {{ vxlan_ext_if }},{{ router_vxlan.remote_ipaddr }},{{ vxlan_id }}
 
 - name: Set endpoint default routes
   shell: >

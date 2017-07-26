@@ -4,11 +4,25 @@
   yum:
     name: "{{ item }}"
   with_items:
-    - golang 
     - nano 
     - tree 
     - git
   ignore_errors: yes
+
+- name: Import go-repo.io gpg keys
+  shell: >
+    rpm --import https://mirror.go-repo.io/centos/RPM-GPG-KEY-GO-REPO
+
+- name: Add custom go-repo.io
+  yum_repository:
+    name: go-repo
+    description: Latest Go Lang repo
+    baseurl: https://mirror.go-repo.io/centos/$releasever/$basearch/
+
+- name: Install go
+  yum:
+    name: golang
+    state: present
 
 - name: Setup environment variables
   set_fact:
