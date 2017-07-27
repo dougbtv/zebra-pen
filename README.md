@@ -90,22 +90,10 @@ oc status
 
 ### Running the OpenShift playbooks
 
-First, you generally setup the requirements for each machine (building koko) and starting containers on the vanilla host.
+Setup the an inventory file with two hosts, used below is my reference inventory:
 
 ```
 ansible-playbook -i inventory/vxlan.dougaws.inventory openshift-vxlan.yml 
-```
-
-Then we create the pods on the openshift host.
-
-```
-ansible-playbook -i inventory/vxlan.dougaws.inventory openshift-create-pods.yml
-```
-
-Finally, we apply use koko to those pods.
-
-```
-ansible-playbook -i inventory/vxlan.dougaws.inventory openshift-koko-pods.yml
 ```
 
 ## Verifying the results.
