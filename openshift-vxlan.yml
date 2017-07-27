@@ -1,24 +1,29 @@
 ---
-# Run 2 quagga instances in containers on all vms
-- hosts: all_vms
+# Just install docker on host a.
+- hosts: first_host
   vars_files:
     - vars/all.yml
   pre_tasks: []
   tasks: []
   roles:
     - { role: docker-install }
-    - { role: build-quagga }
-    - { role: koko-compile }
-    - { role: docker-build-images }
 
 # Run 2 quagga instances in containers on all vms
 - hosts: all_vms
   vars_files:
     - vars/all.yml
-  pre_tasks: []
+  pre_tasks:
+    - name: Remove all running containers
+      shell: >
+        docker rm $(docker kill {{ item }})
+      with_items:
+        - quagga_a
+        - quagga_b
+        - centos_a
+        - centos_b
+      ignore_errors: yes
   tasks: []
   roles:
-    - { role: docker-install }
     - { role: build-quagga }
     - { role: koko-compile }
     - { role: docker-build-images }
@@ -26,11 +31,7 @@
 - hosts: first_host
   vars_files:
     - vars/all.yml
-  pre_tasks:
-    - name: Remove all running containers
-      shell: >
-        docker rm $(docker kill $(docker ps -aq))
-      ignore_errors: yes
+  pre_tasks: []
   tasks: []
   roles:
     - { role: run-single-endpoint, target_container_name: "centos_a" }
@@ -40,18 +41,19 @@
         quagga_debug: true,
         # use_config: "/etc/quagga_a.conf",
         ospfd_passive_interface: "in2",
-        ospfd_interfaces: [in2, mid1],
+        ospfd_interfaces: [in2, mid1, lo],
         ospfd_networks: ["192.168.2.0/24","192.168.3.0/24","2.2.2.0/24","3.3.3.0/24"],
         destination_config: "/etc/quagga_a.conf",
         destination_ospfd_config: "/etc/quagga_ospfd_a.conf",
         route_mask: "192.168.4.101/32",
         route_via: "192.168.3.101",
         router_id: "2.2.2.2",
-        quagga_static_route: ["1.1.1.1 255.255.255.255 192.168.2.100"],
+        quagga_static_route: ["1.1.1.1 255.255.255.255 192.168.2.100",]
+          # - "4.4.4.4 255.255.255.255 192.168.3.101"
       }
     - { role: koko-vxlan-configure,
         vxlan_id: 10,
-        vxlan_ext_if: "eth0",
+        vxlan_ext_if: "{{ vxlan_interface }}",
         endpoint: {
           container_name: centos_a,
           ifname: in1,
@@ -77,21 +79,17 @@
 - hosts: last_host
   vars_files:
     - vars/all.yml
-  pre_tasks:
-    - name: Remove all running containers
-      shell: >
-        docker rm $(docker kill $(docker ps -aq))
-      ignore_errors: yes
+  pre_tasks: []
   tasks: []
   roles:
-    - { role: run-single-endpoint, target_container_name: "centos_b" }
-    - { role: quagga-run,
-        quagga_container_name: quagga_b,
+    # - { role: run-single-endpoint, target_container_name: "centos_b" }
+    - { role: openshift-run-containers,
+        quagga_container_name: quaggab,
         force_quagga_kill: true,
         quagga_debug: true,
         # use_config: "/etc/quagga_b.conf",
         ospfd_passive_interface: "out1",
-        ospfd_interfaces: [mid2, out1],
+        ospfd_interfaces: [mid2, out1, lo],
         ospfd_networks: ["192.168.3.0/24", "192.168.4.0/24","2.2.2.0/24","3.3.3.0/24"],
         destination_config: "/etc/quagga_b.conf",
         destination_ospfd_config: "/etc/quagga_ospfd_b.conf",
@@ -99,35 +97,41 @@
         route_via: "192.168.4.101",
         classa_route_mask: "4.4.4.4/32",
         router_id: "3.3.3.3",
-        quagga_static_route: ["4.4.4.4 255.255.255.255 192.168.4.101"],
-       }
-    - { role: koko-vxlan-configure,
+        quagga_static_route: ["4.4.4.4 255.255.255.255 192.168.4.101",]
+      }
+
+- hosts: last_host
+  vars_files:
+    - vars/all.yml
+  pre_tasks: []
+  tasks: []
+  roles:
+    - { role: koko-vxlan-openshift,
         vxlan_id: 10,
-        vxlan_ext_if: "eth0",
+        vxlan_ext_if: "{{ vxlan_interface }}",
+        quagga_static_route: ["4.4.4.4 255.255.255.255 192.168.4.101",],
         endpoint: {
-          container_name: centos_b,
+          container_name: centosb,
           ifname: out2,
           ipaddr: 192.168.4.101,
           defroute: 192.168.4.100,
           public_ip: 4.4.4.4,
         },
         router_veth: {
-          container_name: quagga_b,
+          container_name: quaggab,
           ifname: out1,
           ipaddr: 192.168.4.100,
           public_ip: 3.3.3.3,
         },
         router_vxlan: {
-          container_name: quagga_b,
+          container_name: quaggab,
           ifname: mid2,
           ipaddr: 192.168.3.101,
           # THIS NEEDS TO BE LAB B REMOTE IP.
-          remote_ipaddr: "{{ hostvars['host_a']['ansible_host'] }}",
+          # ajay lab: 66.187.233.206
+          # laboratory b: 204.13.40.234
+          remote_ipaddr: "{{ vxlan_remote_ipaddr }}",
+
         },
       }
-
-
-
-
-
 

@@ -1,0 +1,36 @@
+host_a ansible_host=192.168.1.88
+# host_b ansible_host=52.32.5.155
+host_b ansible_host=192.168.1.58
+
+[all_vms]
+host_a
+host_b
+
+[first_host]
+host_a
+
+[last_host]
+host_b
+
+[first_host:vars]
+vxlan_interface=eth0
+ansible_ssh_user=centos
+ansible_become=true
+ansible_become_user=root
+# ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p root@192.168.1.119"'
+ansible_ssh_private_key_file=/home/doug/.ssh/id_testvms
+
+[last_host:vars]
+vxlan_remote_ipaddr=192.168.1.88
+vxlan_interface=eth0
+ansible_ssh_user=centos
+ansible_become=true
+ansible_become_user=root
+ansible_ssh_private_key_file=/home/doug/.ssh/id_testvms
+# ansible_ssh_private_key_file=/home/doug/.ssh/aws_id
+# vxlan_remote_ipaddr=204.13.40.234
+# vxlan_interface=eth0
+# ansible_ssh_user=centos
+# ansible_become=true
+# ansible_become_user=root
+# ansible_ssh_private_key_file=/home/doug/.ssh/aws_id

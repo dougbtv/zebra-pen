@@ -1,7 +1,8 @@
 {% for interface in ospfd_interfaces %}
 interface {{ interface }}
+ ip ospf mtu-ignore
+ ip ospf network point-to-point
 {% endfor %}
-interface lo
 router ospf
  ospf router-id {{ router_id }}
  redistribute static

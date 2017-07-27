@@ -1,0 +1,6 @@
+# openshift instance
+ssh -i ~/.ssh/aws_id centos@52.36.7.65
+
+# plain docker instance
+ssh -i ~/.ssh/aws_id centos@54.69.121.194
+

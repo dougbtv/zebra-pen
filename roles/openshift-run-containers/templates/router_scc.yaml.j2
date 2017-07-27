@@ -1,0 +1,36 @@
+metadata:
+  annotations:
+    kubernetes.io/description: router privileges - these are fairly loose.
+  creationTimestamp: null
+  name: router
+allowHostDirVolumePlugin: true
+allowHostIPC: false
+allowHostNetwork: true
+allowHostPID: true
+allowHostPorts: false
+allowPrivilegedContainer: true
+allowedCapabilities: null
+apiVersion: v1
+defaultAddCapabilities: null
+fsGroup:
+  type: RunAsAny
+groups:
+- system:cluster-admins
+kind: SecurityContextConstraints
+priority: 10
+readOnlyRootFilesystem: false
+requiredDropCapabilities:
+- MKNOD
+- SYS_CHROOT
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: MustRunAs
+supplementalGroups:
+  type: RunAsAny
+volumes:
+- configMap
+- downwardAPI
+- emptyDir
+- persistentVolumeClaim
+- secret

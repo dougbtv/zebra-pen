@@ -1,0 +1,26 @@
+host_a ansible_host=10.19.5.86
+host_b ansible_host=54.200.66.51
+
+[all_vms]
+host_a
+host_b
+
+[first_host]
+host_a
+
+[last_host]
+host_b
+
+[first_host:vars]
+vxlan_interface=eth0
+ansible_ssh_user=centos
+ansible_become=true
+ansible_become_user=root
+ansible_ssh_private_key_file=/home/doug/.ssh/laptop_id_rsa
+
+[last_host:vars]
+vxlan_interface=eth0
+ansible_ssh_user=ec2-user
+ansible_become=true
+ansible_become_user=root
+ansible_ssh_private_key_file=/home/doug/.ssh/ajay_aws

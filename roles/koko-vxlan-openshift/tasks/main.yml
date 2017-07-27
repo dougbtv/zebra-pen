@@ -1,0 +1,87 @@
+---
+
+- name: Get proper container id, quagga
+  shell: >
+    docker ps | grep -i {{ router_vxlan.container_name }} | grep -v POD | awk '{print $1}'
+  register: proper_container_quagga
+
+- name: Get infra container id, quagga
+  shell: >
+    docker ps | grep -i {{ router_vxlan.container_name }} | grep POD | awk '{print $1}'
+  register: infra_container_quagga
+
+- name: Get proper container id, endpoint
+  shell: >
+    docker ps | grep -i {{ endpoint.container_name }} | grep -v POD | awk '{print $1}'
+  register: proper_container_endpoint
+
+- name: Get infra container id, endpoint
+  shell: >
+    docker ps | grep -i {{ endpoint.container_name }} | grep POD | awk '{print $1}'
+  register: infra_container_endpoint
+
+- debug: "msg={{ proper_container_quagga.stdout }}"
+- debug: "msg={{ infra_container_quagga.stdout }}"
+- debug: "msg={{ proper_container_endpoint.stdout }}"
+- debug: "msg={{ infra_container_endpoint.stdout }}"
+
+# - name: Delete interfaces
+#   shell: >
+#     ip link delete {{ item }}
+#   ignore_errors: yes
+#   with_items:
+#     - "{{ endpoint.ifname }}"
+#     - "{{ router_veth.ifname }}"
+#     - "{{ router_vxlan.ifname }}"
+
+- name: Create veth interfaces (on infra container)
+  shell: >
+    /usr/src/gocode/koko 
+    -d {{ infra_container_endpoint.stdout }},{{ endpoint.ifname }},{{ endpoint.ipaddr }}/24
+    -d {{ infra_container_quagga.stdout }},{{ router_veth.ifname }},{{ router_veth.ipaddr }}/24
+
+# vxlan example.
+# ./koko {-d <container>:<linkname>[:<IPv4 addr>/<prefixlen>] |
+#        -n <netns name>:<linkname>[:<IPv4 addr>/<prefixlen>] }
+#        -x <parent interface>:<remote endpoint IP addr>:<vxlan id> 
+
+- name: Create middle (vxlan) interfaces (on infra container)
+  shell: >
+    /usr/src/gocode/koko 
+    -d {{ infra_container_quagga.stdout }},{{ router_vxlan.ifname }},{{ router_vxlan.ipaddr }}/24
+    -x {{ vxlan_ext_if }},{{ router_vxlan.remote_ipaddr }},{{ vxlan_id }}
+
+- name: Delete eth0 interfaces
+  shell: >
+    docker exec -i {{ item }} ip link delete eth0
+  with_items:
+    - "{{ proper_container_endpoint.stdout }}"
+    - "{{ proper_container_quagga.stdout }}"
+
+- name: Set endpoint default routes
+  shell: >
+    docker exec -i {{ proper_container_endpoint.stdout }} /bin/bash -c '
+    ip route add 0.0.0.0/0 via {{ endpoint.defroute }} dev {{ endpoint.ifname }};
+    '
+
+- name: Create aliases for Class A IP addresses (on proper container)
+  shell: >
+    docker exec -i {{ item.container }} /bin/bash -c '
+    ip a add {{ item.ip_address }}/255.255.255.255 dev lo;
+    '    
+  with_items:
+    - container: "{{ proper_container_endpoint.stdout }}"
+      ip_address: "{{ endpoint.public_ip }}"
+    - container: "{{ proper_container_quagga.stdout }}"
+      ip_address: "{{ router_veth.public_ip }}"
+
+
+- name: set quagga static routes
+  shell: >
+    docker exec -i {{ proper_container_quagga.stdout }}
+    vtysh
+    -c 'config term' 
+    -c 'ip route {{ item }}'
+    -c 'router ospf' 
+    -c 'redistribute stat'
+  with_items: "{{ quagga_static_route }}"

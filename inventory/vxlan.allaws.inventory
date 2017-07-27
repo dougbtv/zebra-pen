@@ -1,0 +1,27 @@
+host_a ansible_host=54.69.121.194
+host_b ansible_host=52.36.7.65
+
+[all_vms]
+host_a
+host_b
+
+[first_host]
+host_a
+
+[last_host]
+host_b
+
+[first_host:vars]
+vxlan_interface=eth0
+ansible_ssh_user=centos
+ansible_become=true
+ansible_become_user=root
+ansible_ssh_private_key_file=/home/doug/.ssh/aws_id
+
+[last_host:vars]
+vxlan_remote_ipaddr=54.69.121.194
+vxlan_interface=eth0
+ansible_ssh_user=centos
+ansible_become=true
+ansible_become_user=root
+ansible_ssh_private_key_file=/home/doug/.ssh/aws_id

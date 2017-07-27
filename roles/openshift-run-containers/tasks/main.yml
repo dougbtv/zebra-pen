@@ -1,0 +1,45 @@
+---
+
+- name: Check if templates exist.
+  stat:
+    path: /etc/router_pods.yaml
+  register: stat_resourcedef
+
+- name: Delete the pods
+  shell: >
+    oc delete -f /etc/router_pods.yaml  && oc delete -f /etc/router_scc.yaml
+  ignore_errors: yes
+  when: stat_resourcedef.stat.exists
+
+- name: Wait until the pods are gone
+  shell: >
+    oc get pods | grep -Pi "quagga"
+  register: check_quagga_running
+  until: check_quagga_running.rc == 1
+  retries: 60
+  delay: 1
+  ignore_errors: yes
+
+- name: Template router pods yaml
+  template:
+    src: router_pods.yaml.j2
+    dest: /etc/router_pods.yaml
+
+- name: Template router SCC
+  template:
+    src: router_scc.yaml.j2
+    dest: /etc/router_scc.yaml
+
+- name: Create SCC & pods
+  shell: >
+    oc create -f /etc/router_scc.yaml;
+    oc create -f /etc/router_pods.yaml
+
+- name: Wait until the pod is up and running
+  shell: >
+    oc get pods | grep -P "quagga.+Running"
+  register: check_quagga_running
+  until: check_quagga_running.rc == 0
+  retries: 60
+  delay: 1
+  ignore_errors: yes
