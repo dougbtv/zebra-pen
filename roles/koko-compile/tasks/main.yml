@@ -38,7 +38,7 @@
   git:
     repo: 'https://github.com/redhat-nfvpe/koko.git'
     dest: /usr/src/gocode/src/koko/
-    version: master
+    version: v0.4
 
 - name: Resolve koko dependencies
   shell: >
